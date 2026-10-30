@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Acortador de Enlaces - UIDE AWS</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Acortador UIDE</h1>
+        <p class="subtitle">Cloud Architecture Midterm - AWS</p>
+        
+        <div class="card">
+            <div class="input-group">
+                <input type="url" id="originalUrl" placeholder="Pega tu URL larga aquí (ej. https://example.com)..." required>
+                <button id="shortenBtn" onclick="shortenUrl()">Acortar Enlace</button>
+            </div>
+            
+            <div id="errorMsg" class="error hidden"></div>
+            
+            <div id="resultContainer" class="result hidden">
+                <h3>¡Enlace acortado con éxito!</h3>
+                <div class="result-box">
+                    <input type="text" id="shortUrlOutput" readonly>
+                    <button id="copyBtn" onclick="copyToClipboard()">Copiar</button>
+                </div>
+                <a id="visitLink" href="#" target="_blank" class="visit-btn">Visitar enlace corto</a>
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
