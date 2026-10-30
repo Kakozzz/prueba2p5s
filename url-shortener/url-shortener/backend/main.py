@@ -3,14 +3,14 @@ import uuid
 from datetime import datetime
 from fastapi import FastAPI, HTTPException, status
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import RedirectResponse
+from fastapi.responses import RedirectResponse, FileResponse
 import boto3
 from botocore.exceptions import ClientError
 from pydantic import BaseModel
 
 app = FastAPI(title="AWS URL Shortener API - UIDE", version="1.0.0")
 
-# Configurar CORS para permitir peticiones desde S3
+# Configurar CORS para permitir peticiones desde S3 o cualquier origen
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -19,8 +19,31 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+FRONTEND_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "frontend"))
+
+@app.get("/")
+def get_index():
+    index_file = os.path.join(FRONTEND_DIR, "index.html")
+    if os.path.exists(index_file):
+        return FileResponse(index_file)
+    return {"message": "Frontend not found"}
+
+@app.get("/style.css")
+def get_css():
+    css_file = os.path.join(FRONTEND_DIR, "style.css")
+    if os.path.exists(css_file):
+        return FileResponse(css_file, media_type="text/css")
+    raise HTTPException(status_code=404)
+
+@app.get("/script.js")
+def get_js():
+    js_file = os.path.join(FRONTEND_DIR, "script.js")
+    if os.path.exists(js_file):
+        return FileResponse(js_file, media_type="application/javascript")
+    raise HTTPException(status_code=404)
+
 AWS_REGION = os.getenv("AWS_REGION", "us-east-1")
-DYNAMODB_TABLE = os.getenv("DYNAMODB_TABLE", "urls")
+DYNAMODB_TABLE = os.getenv("DYNAMODB_TABLE", "url-shortener-links")
 
 dynamodb = boto3.resource("dynamodb", region_name=AWS_REGION)
 table = dynamodb.Table(DYNAMODB_TABLE)
@@ -47,7 +70,7 @@ def create_short_url(payload: URLRequest):
     return {
         "short_code": short_code,
         "original_url": item["original_url"],
-        "short_url": f"http://localhost:8000/{short_code}"
+        "short_url": f"http://35.86.130.100:8000/{short_code}"
     }
 
 @app.get("/{short_code}")

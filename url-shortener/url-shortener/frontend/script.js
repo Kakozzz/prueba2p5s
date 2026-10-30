@@ -1,4 +1,4 @@
-const API_URL = "http://TU_IP_DE_EC2:8000";
+const API_URL = "http://35.86.130.100:8000";
 
 async function shortenUrl() {
     const originalUrlInput = document.getElementById("originalUrl");
